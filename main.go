@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"gin-api/db"
 	"gin-api/handlers"
-	loggeri22 "gin-api/internal/log"
+	loggerconfig "gin-api/internal/log"
 	"gin-api/internal/middleware"
 
 	"log"
@@ -15,7 +13,7 @@ import (
 
 func main() {
 	// init log
-	logger, err := loggeri22.NewLog()
+	logger, err := loggerconfig.NewLog()
 	if err != nil {
 		log.Println(err)
 	}
@@ -33,18 +31,13 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	student, err := db.GetStudentByID(context.Background(), client, "e4d453bc-e04f-4161-b404-f794ff813")
-	if err != nil {
-		log.Println(err)
-	}
-
-	fmt.Println(student)
-
 	// gin init
 	r := gin.Default()
 
 	// use middleware
 	r.Use(middleware.LogRequest(logger))
+
+	// api route
 	v1 := r.Group("/v1")
 	{
 		students := v1.Group("/students")
@@ -57,5 +50,6 @@ func main() {
 		}
 	}
 
+	// run app (default 8080)
 	r.Run()
 }

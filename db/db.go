@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gin-api/ent"
 	"gin-api/ent/student"
+	"gin-api/internal/paging"
 	"log"
 
 	"github.com/gofrs/uuid"
@@ -19,8 +20,15 @@ func GetID() string {
 	return u.String()
 }
 
-func GetAllStudent(ctx context.Context, client *ent.Client) ([]*ent.Student, error) {
-	students, err := client.Student.Query().All(ctx)
+func GetAllStudent(ctx context.Context, client *ent.Client, paging *paging.Paging) ([]*ent.Student, error) {
+	total, err := client.Student.Query().Count(ctx)
+	if err != nil {
+		log.Println(err)
+	}
+
+	paging.Total = total
+
+	students, err := client.Student.Query().Offset((paging.Page - 1) * paging.Limit).Limit(paging.Limit).All(ctx)
 	if err != nil {
 		return nil, err
 	}
