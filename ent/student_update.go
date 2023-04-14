@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"gin-api/ent/predicate"
 	"gin-api/ent/student"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -45,6 +46,26 @@ func (su *StudentUpdate) SetSchool(s string) *StudentUpdate {
 	return su
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (su *StudentUpdate) SetCreatedAt(t time.Time) *StudentUpdate {
+	su.mutation.SetCreatedAt(t)
+	return su
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (su *StudentUpdate) SetNillableCreatedAt(t *time.Time) *StudentUpdate {
+	if t != nil {
+		su.SetCreatedAt(*t)
+	}
+	return su
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (su *StudentUpdate) SetUpdatedAt(t time.Time) *StudentUpdate {
+	su.mutation.SetUpdatedAt(t)
+	return su
+}
+
 // Mutation returns the StudentMutation object of the builder.
 func (su *StudentUpdate) Mutation() *StudentMutation {
 	return su.mutation
@@ -52,6 +73,7 @@ func (su *StudentUpdate) Mutation() *StudentMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (su *StudentUpdate) Save(ctx context.Context) (int, error) {
+	su.defaults()
 	return withHooks[int, StudentMutation](ctx, su.sqlSave, su.mutation, su.hooks)
 }
 
@@ -77,6 +99,14 @@ func (su *StudentUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (su *StudentUpdate) defaults() {
+	if _, ok := su.mutation.UpdatedAt(); !ok {
+		v := student.UpdateDefaultUpdatedAt()
+		su.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(student.Table, student.Columns, sqlgraph.NewFieldSpec(student.FieldID, field.TypeString))
 	if ps := su.mutation.predicates; len(ps) > 0 {
@@ -94,6 +124,12 @@ func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.School(); ok {
 		_spec.SetField(student.FieldSchool, field.TypeString, value)
+	}
+	if value, ok := su.mutation.CreatedAt(); ok {
+		_spec.SetField(student.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := su.mutation.UpdatedAt(); ok {
+		_spec.SetField(student.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, su.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -133,6 +169,26 @@ func (suo *StudentUpdateOne) SetSchool(s string) *StudentUpdateOne {
 	return suo
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (suo *StudentUpdateOne) SetCreatedAt(t time.Time) *StudentUpdateOne {
+	suo.mutation.SetCreatedAt(t)
+	return suo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (suo *StudentUpdateOne) SetNillableCreatedAt(t *time.Time) *StudentUpdateOne {
+	if t != nil {
+		suo.SetCreatedAt(*t)
+	}
+	return suo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (suo *StudentUpdateOne) SetUpdatedAt(t time.Time) *StudentUpdateOne {
+	suo.mutation.SetUpdatedAt(t)
+	return suo
+}
+
 // Mutation returns the StudentMutation object of the builder.
 func (suo *StudentUpdateOne) Mutation() *StudentMutation {
 	return suo.mutation
@@ -153,6 +209,7 @@ func (suo *StudentUpdateOne) Select(field string, fields ...string) *StudentUpda
 
 // Save executes the query and returns the updated Student entity.
 func (suo *StudentUpdateOne) Save(ctx context.Context) (*Student, error) {
+	suo.defaults()
 	return withHooks[*Student, StudentMutation](ctx, suo.sqlSave, suo.mutation, suo.hooks)
 }
 
@@ -175,6 +232,14 @@ func (suo *StudentUpdateOne) Exec(ctx context.Context) error {
 func (suo *StudentUpdateOne) ExecX(ctx context.Context) {
 	if err := suo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (suo *StudentUpdateOne) defaults() {
+	if _, ok := suo.mutation.UpdatedAt(); !ok {
+		v := student.UpdateDefaultUpdatedAt()
+		suo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -212,6 +277,12 @@ func (suo *StudentUpdateOne) sqlSave(ctx context.Context) (_node *Student, err e
 	}
 	if value, ok := suo.mutation.School(); ok {
 		_spec.SetField(student.FieldSchool, field.TypeString, value)
+	}
+	if value, ok := suo.mutation.CreatedAt(); ok {
+		_spec.SetField(student.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := suo.mutation.UpdatedAt(); ok {
+		_spec.SetField(student.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &Student{config: suo.config}
 	_spec.Assign = _node.assignValues

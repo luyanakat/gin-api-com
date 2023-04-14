@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"gin-api/ent/student"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -37,6 +38,34 @@ func (sc *StudentCreate) SetSchool(s string) *StudentCreate {
 	return sc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sc *StudentCreate) SetCreatedAt(t time.Time) *StudentCreate {
+	sc.mutation.SetCreatedAt(t)
+	return sc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sc *StudentCreate) SetNillableCreatedAt(t *time.Time) *StudentCreate {
+	if t != nil {
+		sc.SetCreatedAt(*t)
+	}
+	return sc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (sc *StudentCreate) SetUpdatedAt(t time.Time) *StudentCreate {
+	sc.mutation.SetUpdatedAt(t)
+	return sc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (sc *StudentCreate) SetNillableUpdatedAt(t *time.Time) *StudentCreate {
+	if t != nil {
+		sc.SetUpdatedAt(*t)
+	}
+	return sc
+}
+
 // SetID sets the "id" field.
 func (sc *StudentCreate) SetID(s string) *StudentCreate {
 	sc.mutation.SetID(s)
@@ -50,6 +79,7 @@ func (sc *StudentCreate) Mutation() *StudentMutation {
 
 // Save creates the Student in the database.
 func (sc *StudentCreate) Save(ctx context.Context) (*Student, error) {
+	sc.defaults()
 	return withHooks[*Student, StudentMutation](ctx, sc.sqlSave, sc.mutation, sc.hooks)
 }
 
@@ -75,6 +105,18 @@ func (sc *StudentCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (sc *StudentCreate) defaults() {
+	if _, ok := sc.mutation.CreatedAt(); !ok {
+		v := student.DefaultCreatedAt()
+		sc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := sc.mutation.UpdatedAt(); !ok {
+		v := student.DefaultUpdatedAt()
+		sc.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (sc *StudentCreate) check() error {
 	if _, ok := sc.mutation.Name(); !ok {
@@ -85,6 +127,12 @@ func (sc *StudentCreate) check() error {
 	}
 	if _, ok := sc.mutation.School(); !ok {
 		return &ValidationError{Name: "school", err: errors.New(`ent: missing required field "Student.school"`)}
+	}
+	if _, ok := sc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Student.created_at"`)}
+	}
+	if _, ok := sc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Student.updated_at"`)}
 	}
 	return nil
 }
@@ -133,6 +181,14 @@ func (sc *StudentCreate) createSpec() (*Student, *sqlgraph.CreateSpec) {
 		_spec.SetField(student.FieldSchool, field.TypeString, value)
 		_node.School = value
 	}
+	if value, ok := sc.mutation.CreatedAt(); ok {
+		_spec.SetField(student.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := sc.mutation.UpdatedAt(); ok {
+		_spec.SetField(student.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	return _node, _spec
 }
 
@@ -150,6 +206,7 @@ func (scb *StudentCreateBulk) Save(ctx context.Context) ([]*Student, error) {
 	for i := range scb.builders {
 		func(i int, root context.Context) {
 			builder := scb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*StudentMutation)
 				if !ok {
