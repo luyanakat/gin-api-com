@@ -5,12 +5,22 @@ import (
 	"fmt"
 	"gin-api/db"
 	"gin-api/handlers"
+	loggeri22 "gin-api/internal/log"
+	"gin-api/internal/middleware"
+
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// init log
+	logger, err := loggeri22.NewLog()
+	if err != nil {
+		log.Println(err)
+	}
+	defer logger.Sync()
+
 	// connect db
 	client, err := db.Connect()
 	if err != nil {
@@ -33,6 +43,8 @@ func main() {
 	// gin init
 	r := gin.Default()
 
+	// use middleware
+	r.Use(middleware.LogRequest(logger))
 	v1 := r.Group("/v1")
 	{
 		students := v1.Group("/students")
