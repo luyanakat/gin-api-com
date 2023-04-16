@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gin-api/ent"
 	"gin-api/ent/student"
+	"gin-api/ent/user"
 	"gin-api/internal/paging"
 	"log"
 
@@ -74,4 +75,30 @@ func DeleteStudentByID(ctx context.Context, client *ent.Client, id string) error
 		return err
 	}
 	return nil
+}
+
+func CreateUser(ctx context.Context, client *ent.Client, name, username, email, password string) (*ent.User, error) {
+	user, err := client.User.
+		Create().
+		SetName(name).
+		SetUserName(username).
+		SetPassword(password).
+		SetEmail(email).
+		Save(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating user: %w", err)
+	}
+	log.Println("student was created: ", user)
+	return user, nil
+}
+
+func GetUserByEmail(ctx context.Context, client *ent.Client, email string) (*ent.User, error) {
+	user, err := client.User.
+		Query().
+		Where(user.Email(email)).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

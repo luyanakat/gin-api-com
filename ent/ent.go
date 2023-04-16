@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"gin-api/ent/student"
+	"gin-api/ent/user"
 	"reflect"
 	"sync"
 
@@ -74,6 +75,7 @@ func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			student.Table: student.ValidColumn,
+			user.Table:    user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

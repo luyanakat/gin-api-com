@@ -48,6 +48,15 @@ func main() {
 			students.PATCH("/:id", handlers.UpdateStudentByID(client))
 			students.DELETE("/:id", handlers.DeleteStudentByID(client))
 		}
+		users := v1.Group("/user")
+		{
+			users.POST("/register", handlers.RegisterUser(client))
+			users.POST("/token", handlers.GenerateToken(client))
+			secured := users.Group("/secured").Use(middleware.Auth())
+			{
+				secured.GET("/ping", handlers.Ping())
+			}
+		}
 	}
 
 	// run app (default 8080)

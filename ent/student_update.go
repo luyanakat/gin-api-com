@@ -46,20 +46,6 @@ func (su *StudentUpdate) SetSchool(s string) *StudentUpdate {
 	return su
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (su *StudentUpdate) SetCreatedAt(t time.Time) *StudentUpdate {
-	su.mutation.SetCreatedAt(t)
-	return su
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (su *StudentUpdate) SetNillableCreatedAt(t *time.Time) *StudentUpdate {
-	if t != nil {
-		su.SetCreatedAt(*t)
-	}
-	return su
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (su *StudentUpdate) SetUpdatedAt(t time.Time) *StudentUpdate {
 	su.mutation.SetUpdatedAt(t)
@@ -125,9 +111,6 @@ func (su *StudentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := su.mutation.School(); ok {
 		_spec.SetField(student.FieldSchool, field.TypeString, value)
 	}
-	if value, ok := su.mutation.CreatedAt(); ok {
-		_spec.SetField(student.FieldCreatedAt, field.TypeTime, value)
-	}
 	if value, ok := su.mutation.UpdatedAt(); ok {
 		_spec.SetField(student.FieldUpdatedAt, field.TypeTime, value)
 	}
@@ -166,20 +149,6 @@ func (suo *StudentUpdateOne) SetAge(s string) *StudentUpdateOne {
 // SetSchool sets the "school" field.
 func (suo *StudentUpdateOne) SetSchool(s string) *StudentUpdateOne {
 	suo.mutation.SetSchool(s)
-	return suo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (suo *StudentUpdateOne) SetCreatedAt(t time.Time) *StudentUpdateOne {
-	suo.mutation.SetCreatedAt(t)
-	return suo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (suo *StudentUpdateOne) SetNillableCreatedAt(t *time.Time) *StudentUpdateOne {
-	if t != nil {
-		suo.SetCreatedAt(*t)
-	}
 	return suo
 }
 
@@ -277,9 +246,6 @@ func (suo *StudentUpdateOne) sqlSave(ctx context.Context) (_node *Student, err e
 	}
 	if value, ok := suo.mutation.School(); ok {
 		_spec.SetField(student.FieldSchool, field.TypeString, value)
-	}
-	if value, ok := suo.mutation.CreatedAt(); ok {
-		_spec.SetField(student.FieldCreatedAt, field.TypeTime, value)
 	}
 	if value, ok := suo.mutation.UpdatedAt(); ok {
 		_spec.SetField(student.FieldUpdatedAt, field.TypeTime, value)
