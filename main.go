@@ -51,7 +51,7 @@ func main() {
 		users := v1.Group("/user")
 		{
 			users.POST("/register", handlers.RegisterUser(client))
-			users.POST("/token", handlers.GenerateToken(client))
+			users.POST("/login", handlers.Login(client))
 			secured := users.Group("/secured").Use(middleware.Auth())
 			{
 				secured.GET("/ping", handlers.Ping())

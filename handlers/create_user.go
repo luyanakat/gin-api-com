@@ -9,23 +9,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type RegisterUserData struct {
+	ID       int    `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	UserName string `json:"user_name,omitempty"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password"`
+}
+
 func RegisterUser(client *ent.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var user ent.User
+		var user RegisterUserData
 
 		if err := c.ShouldBindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		if err := token.HashPassword(user.Password, &user); err != nil {
+		hashedPass, err := token.HashPassword(user.Password)
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"data": err.Error(),
+				"error": err.Error(),
 			})
 			return
 		}
 
-		u, err := db.CreateUser(c.Request.Context(), client, user.Name, user.UserName, user.Email, user.Password)
+		u, err := db.CreateUser(c.Request.Context(), client, user.Name, user.UserName, user.Email, string(hashedPass))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
@@ -37,7 +46,7 @@ func RegisterUser(client *ent.Client) gin.HandlerFunc {
 			"userId":   u.ID,
 			"email":    u.Email,
 			"username": u.UserName,
-			"pass":     u.Password,
+			"pass":     u.Password, // just test senstive struct tag
 		})
 	}
 }
