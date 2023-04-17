@@ -4,7 +4,6 @@ import (
 	"gin-api/db"
 	"gin-api/ent"
 	"gin-api/token"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +32,6 @@ func Login(client *ent.Client) gin.HandlerFunc {
 			})
 			return
 		}
-		log.Println(user.Password)
 
 		credentialError := token.CheckPassword(request.Password, user)
 		if credentialError != nil {

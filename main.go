@@ -34,7 +34,7 @@ func main() {
 	// gin init
 	r := gin.Default()
 
-	// use middleware
+	// use middleware zap
 	r.Use(middleware.LogRequest(logger))
 
 	// api route
