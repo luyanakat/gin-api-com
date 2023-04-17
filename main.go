@@ -4,7 +4,7 @@ import (
 	"gin-api/db"
 	"gin-api/handlers"
 	loggerconfig "gin-api/internal/log"
-	"gin-api/internal/middleware"
+	"gin-api/middleware"
 
 	"log"
 

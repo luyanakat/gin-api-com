@@ -49,4 +49,4 @@ func RegisterUser(client *ent.Client) gin.HandlerFunc {
 			"pass":     u.Password, // just test senstive struct tag
 		})
 	}
-}
+}	
