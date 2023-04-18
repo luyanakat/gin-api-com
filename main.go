@@ -48,6 +48,7 @@ func main() {
 			students.PATCH("/:id", handlers.UpdateStudentByID(client))
 			students.DELETE("/:id", handlers.DeleteStudentByID(client))
 		}
+		// just demo authenticate with jwt
 		users := v1.Group("/user")
 		{
 			users.POST("/register", handlers.RegisterUser(client))
