@@ -21,9 +21,7 @@ func HashPassword(password string) ([]byte, error) {
 }
 func CheckPassword(providedPassword string, user *ent.User) error {
 	log.Println("provided", providedPassword)
-	// print 123456
 	log.Println("user in db", user.Password)
-	// print $2a$14$tveQgEOgFLSFxA4zcqoSW.z4kjDUnhfVUy1Pse4b4XakXRghliSSu (như trong database)
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(providedPassword))
 	if err != nil {
 		log.Println(err)
