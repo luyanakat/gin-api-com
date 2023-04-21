@@ -1,0 +1,31 @@
+# Use postgres/example user/password credentials
+version: '3.7'
+
+networks:
+  ginapi:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: student
+    networks:
+      - ginapi
+      
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - ginapi

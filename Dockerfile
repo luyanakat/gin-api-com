@@ -1,15 +1,21 @@
 # Build Stage
-FROM golang:latest AS builder
+FROM golang:alpine AS builder
 WORKDIR /app
 
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod tidy
+
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /ginapi
+RUN CGO_ENABLED=0 GOOS=linux go build -o server main.go
 
 # Run Stage
 FROM alpine
-WORKDIR /
-COPY --from=builder /todorestapi /ginapi
+WORKDIR /app
+COPY --from=builder /app/server .
 COPY .env .
 
 EXPOSE 8080
-CMD ["/ginapi"]
+
+ENTRYPOINT ["./server"]
