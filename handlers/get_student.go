@@ -14,7 +14,7 @@ func GetStudentByID(client *ent.Client) gin.HandlerFunc {
 
 		student, err := db.GetStudentByID(c.Request.Context(), client, id)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
 		}

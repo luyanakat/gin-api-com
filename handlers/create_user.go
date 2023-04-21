@@ -36,7 +36,7 @@ func RegisterUser(client *ent.Client) gin.HandlerFunc {
 
 		u, err := db.CreateUser(c.Request.Context(), client, user.Name, user.UserName, user.Email, string(hashedPass))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
 			})
 			return
@@ -49,4 +49,4 @@ func RegisterUser(client *ent.Client) gin.HandlerFunc {
 			"pass":     u.Password, // just test senstive struct tag
 		})
 	}
-}	
+}

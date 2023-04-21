@@ -23,7 +23,7 @@ func ListAllStudent(client *ent.Client) gin.HandlerFunc {
 
 		students, err := db.GetAllStudent(c.Request.Context(), client, &page)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
 		}

@@ -27,7 +27,7 @@ func Login(client *ent.Client) gin.HandlerFunc {
 
 		user, err := db.GetUserByEmail(c.Request.Context(), client, request.Email)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
 			return

@@ -21,7 +21,7 @@ func CreateStudent(client *ent.Client) gin.HandlerFunc {
 
 		st, err := db.CreateStudent(c.Request.Context(), client, student.Name, student.Age, student.School)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
 			})
 			return

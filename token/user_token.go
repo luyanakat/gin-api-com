@@ -19,6 +19,7 @@ func HashPassword(password string) ([]byte, error) {
 
 	return bytes, nil
 }
+
 func CheckPassword(providedPassword string, user *ent.User) error {
 	log.Println("provided", providedPassword)
 	log.Println("user in db", user.Password)

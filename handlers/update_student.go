@@ -26,7 +26,7 @@ func UpdateStudentByID(client *ent.Client) gin.HandlerFunc {
 			student.Name,
 			student.School,
 			student.Age); err != nil {
-			c.JSON(http.StatusBadGateway, gin.H{
+			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
 			})
 			return
