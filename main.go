@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"gin-api/db"
 	"gin-api/handlers"
 	loggerconfig "gin-api/internal/log"
@@ -27,7 +28,7 @@ func main() {
 	defer client.Close()
 
 	// run schema
-	if err := db.Schema(client); err != nil {
+	if err := db.Schema(client, context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 

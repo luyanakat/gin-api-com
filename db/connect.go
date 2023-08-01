@@ -25,8 +25,8 @@ func Connect() (*ent.Client, error) {
 }
 
 // Run the auto migration tool.
-func Schema(client *ent.Client) error {
-	if err := client.Schema.Create(context.Background()); err != nil {
+func Schema(client *ent.Client, ctx context.Context) error {
+	if err := client.Schema.Create(ctx); err != nil {
 		return err
 	}
 	return nil
